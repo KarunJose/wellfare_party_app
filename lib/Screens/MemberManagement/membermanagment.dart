@@ -520,7 +520,7 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
                               });
                             },
                             child: const Text(
-                              "Filter",
+                              "Show",
                               style:
                                   TextStyle(fontSize: 16, letterSpacing: 0.5),
                             )),
