@@ -542,23 +542,22 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                       ),
                     ),
                     //email
-                    TextFieldTitle(title: "Gmail"),
+                    TextFieldTitle(title: "Email"),
                     AddMemberTextField(
                       hint: "user@gmail.com",
                       width: double.infinity,
                       controller: emailController,
                       keyboardType: TextInputType.emailAddress,
-                      enabled: !widget.show,
                       onChanged: (String? value) {
                         validateForm();
                       },
-                      formValidator: (dynamic value) {
-                        // return validateEmail(value);
-                        final bool isValid = EmailValidator.validate(value);
-                        if (!isValid) {
-                          return "Invalid email";
-                        }
-                      },
+                      // formValidator: (dynamic value) {
+                      //   // return validateEmail(value);
+                      //   final bool isValid = EmailValidator.validate(value);
+                      //   if (!isValid) {
+                      //     return "Invalid email";
+                      //   }
+                      // },
                     ),
                     TextFieldTitle(title: "Address"),
                     Padding(
