@@ -62,8 +62,8 @@ class _MemberCardState extends State<MemberCard> {
                       Text(
                         widget.member.name,
                         style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       if (widget.show == false)
@@ -93,7 +93,7 @@ class _MemberCardState extends State<MemberCard> {
                         fontSize: 13, fontWeight: FontWeight.w500),
                   ),
                   Text(
-                    widget.member.mobile,
+                    '${widget.member.mobile}',
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
                   ),
                 ],
