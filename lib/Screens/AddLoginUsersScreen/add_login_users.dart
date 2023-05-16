@@ -444,6 +444,8 @@ class _AddLoginUsersState extends State<AddLoginUsers> {
                               password: passwordController.text,
                               memberid: widget.loginuser!.memberId,
                               memberLoginId: widget.loginuser!.id);
+                              print(widget.loginuser!.id);
+                              print(widget.loginuser!.districtId);
                         } else {
                           await userRoleProvider.save(
                             stateDropDownValue:

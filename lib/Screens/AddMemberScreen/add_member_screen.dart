@@ -40,6 +40,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   TextEditingController mobileController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  TextEditingController reasonController = TextEditingController();
 
   TextEditingController participationDateController = TextEditingController();
 
@@ -78,6 +79,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   bool participationDtValid = true;
   bool positionValid = true;
   bool wardValid = true;
+  bool showUpdateButton= false;
+
 
   bool firstValidation = true;
 
@@ -186,6 +189,13 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
     }
   }
 
+  void handleAppBarButtonClick() {
+  setState(() {
+    showUpdateButton = !showUpdateButton;
+  });
+}
+
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -220,8 +230,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                 icon: const Icon(Icons.search),
               ),
               IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.notifications_outlined),
+                onPressed: handleAppBarButtonClick,
+                icon: const Icon(Icons.edit_outlined),
               ),
             ],
           ),
@@ -559,6 +569,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                       //   }
                       // },
                     ),
+                    
                     TextFieldTitle(title: "Address"),
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -635,6 +646,24 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                           ),
                         ),
                       ),
+                    ),
+
+                    TextFieldTitle(title: "Remarks"),
+                    AddMemberTextField(
+                      hint: "Remarks",
+                      width: double.infinity,
+                      controller: reasonController,
+                      //keyboardType: TextInputType.emailAddress,
+                      // onChanged: (String? value) {
+                      //   validateForm();
+                      // },
+                      // formValidator: (dynamic value) {
+                      //   // return validateEmail(value);
+                      //   final bool isValid = EmailValidator.validate(value);
+                      //   if (!isValid) {
+                      //     return "Invalid email";
+                      //   }
+                      // },
                     ),
                     //check box
                     if (userProvider.role == districtPresident &&
@@ -920,159 +949,162 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 20),
                         child: Align(
                           alignment: Alignment.center,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: primaryRed,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30)),
-                              fixedSize: Size(
-                                  MediaQuery.of(context).size.width / 1.5, 45),
-                            ),
-                            onPressed: () async {
-                              bool error = false;
-                              setState(() {
-                                firstValidation = false;
-                              });
-                              error = heirarchyProvider.checkDta() || error;
-                              if (dobController.text == "" ||
-                                  ageController.text == "" ||
-                                  mobileController.text == "" ||
-                                  addressController.text == "") {
-                                showSnackbar(
-                                    context: context, text: "Fill all details");
-                              }
-
-                              if (!_formKey.currentState!.validate()) return;
-
-                              if (checkBoxValue == true) {
-                                if (selectedAdmissionYear == "Admission Year" &&
-                                    userProvider.role == districtPresident &&
-                                    widget.edit == true) {
-                                  setState(() {
-                                    admissionYrValid = false;
-                                  });
-                                  return;
-                                }
-
-                                if (participationDateController.text.isEmpty &&
-                                    userProvider.role == districtPresident &&
-                                    widget.edit == true) {
-                                  setState(() {
-                                    participationDtValid = false;
-                                  });
-                                  return;
-                                }
-                              }
-
-                              if (selectedBloodGroup == "Blood Group") {
+                          child: Visibility(
+                            visible: showUpdateButton,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: primaryRed,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30)),
+                                fixedSize: Size(
+                                    MediaQuery.of(context).size.width / 1.5, 45),
+                              ),
+                              onPressed: () async {
+                                bool error = false;
                                 setState(() {
-                                  bloodgrpValid = false;
+                                  firstValidation = false;
                                 });
-                                return;
-                              }
-                              if (error == true) {
-                                return;
-                              }
-
-                              // if (warddropdownValue.id == "-1") {
-                              //   showSnackbar(
-                              //       context: context, text: "Select Ward");
-                              // }
-
-                              // if (dropdownValue.id == "-1") {
-                              //   showSnackbar(
-                              //       context: context, text: "Select Postion");
-                              // }
-
-                              if (widget.edit == true) {
-                                await memberProvider.updateMember(
-                                  id: widget.member!.id,
-                                  status:
-                                      memberProvider.statusDropDown == "Active"
-                                          ? 1
-                                          : 0,
-                                  name: nameController.text,
-                                  dob: dobController.text,
-                                  gender: value == 1 ? "Male" : "Female",
-                                  age: ageController.text,
-                                  blood: selectedBloodGroup,
-                                  mobile: mobileController.text,
-                                  email: emailController.text,
-
-                                  address: addressController.text,
-                                  isAgree: checkBoxValue,
-                                  adminssionYear:
-                                      selectedAdmissionYear == "Admission Year"
-                                          ? null
-                                          : selectedAdmissionYear,
-                                  participationDate:
-                                      participationDateController.text.isEmpty
-                                          ? null
-                                          : participationDateController.text,
-                                  //  warddropdownValue.id,
-                                  stateId: heirarchyProvider.stateDropDownValue,
-                                  districtId:
-                                      heirarchyProvider.districtDropdownValue,
-                                  constituencyId: heirarchyProvider
-                                      .constituencyDropdownValue,
-                                  panchayathId:
-                                      heirarchyProvider.panchayathDropdownValue,
-                                  wardId: heirarchyProvider.wardDropdownValue,
-                                  unitId: heirarchyProvider.unitDropdownValue,
-                                );
-                              } else {
-                                await memberProvider.addMember(
-                                  name: nameController.text,
-                                  dob: dobController.text,
-                                  status:
-                                      memberProvider.statusDropDown == "Active"
-                                          ? 1
-                                          : 0,
-                                  gender: value == 1 ? "Male" : "Female",
-                                  age: ageController.text,
-                                  blood: selectedBloodGroup,
-                                  mobile: mobileController.text,
-                                  email: emailController.text,
-                                  address: addressController.text,
-                                  isAgree: checkBoxValue,
-                                  adminssionYear:
-                                      selectedAdmissionYear == "Admission Year"
-                                          ? null
-                                          : selectedAdmissionYear,
-                                  participationDate:
-                                      participationDateController.text.isEmpty
-                                          ? null
-                                          : participationDateController.text,
-                                  stateId: heirarchyProvider.stateDropDownValue,
-                                  districtId:
-                                      heirarchyProvider.districtDropdownValue,
-                                  constituencyId: heirarchyProvider
-                                      .constituencyDropdownValue,
-                                  panchayathId:
-                                      heirarchyProvider.panchayathDropdownValue,
-                                  wardId: heirarchyProvider.wardDropdownValue,
-                                  unitId: heirarchyProvider.unitDropdownValue,
-                                );
-                              }
-
-                              // ignore: use_build_context_synchronously
-                              // Navigator.pop(context);
-                              // ignore: use_build_context_synchronously
-                              heirarchyProvider.setInitialData(
-                                all: true,
-                                edit: false,
-                                entity: null,
-                                context: context,
-                              );
-                              Navigator.pop(context);
-                              showSnackbar(
+                                error = heirarchyProvider.checkDta() || error;
+                                if (dobController.text == "" ||
+                                    ageController.text == "" ||
+                                    mobileController.text == "" ||
+                                    addressController.text == "") {
+                                  showSnackbar(
+                                      context: context, text: "Fill all details");
+                                }
+                          
+                                if (!_formKey.currentState!.validate()) return;
+                          
+                                if (checkBoxValue == true) {
+                                  if (selectedAdmissionYear == "Admission Year" &&
+                                      userProvider.role == districtPresident &&
+                                      widget.edit == true) {
+                                    setState(() {
+                                      admissionYrValid = false;
+                                    });
+                                    return;
+                                  }
+                          
+                                  if (participationDateController.text.isEmpty &&
+                                      userProvider.role == districtPresident &&
+                                      widget.edit == true) {
+                                    setState(() {
+                                      participationDtValid = false;
+                                    });
+                                    return;
+                                  }
+                                }
+                          
+                                if (selectedBloodGroup == "Blood Group") {
+                                  setState(() {
+                                    bloodgrpValid = false;
+                                  });
+                                  return;
+                                }
+                                if (error == true) {
+                                  return;
+                                }
+                          
+                                // if (warddropdownValue.id == "-1") {
+                                //   showSnackbar(
+                                //       context: context, text: "Select Ward");
+                                // }
+                          
+                                // if (dropdownValue.id == "-1") {
+                                //   showSnackbar(
+                                //       context: context, text: "Select Postion");
+                                // }
+                          
+                                if (widget.edit == true) {
+                                  await memberProvider.updateMember(
+                                    id: widget.member!.id,
+                                    status:
+                                        memberProvider.statusDropDown == "Active"
+                                            ? 1
+                                            : 0,
+                                    name: nameController.text,
+                                    dob: dobController.text,
+                                    gender: value == 1 ? "Male" : "Female",
+                                    age: ageController.text,
+                                    blood: selectedBloodGroup,
+                                    mobile: mobileController.text,
+                                    email: emailController.text,
+                          
+                                    address: addressController.text,
+                                    isAgree: checkBoxValue,
+                                    adminssionYear:
+                                        selectedAdmissionYear == "Admission Year"
+                                            ? null
+                                            : selectedAdmissionYear,
+                                    participationDate:
+                                        participationDateController.text.isEmpty
+                                            ? null
+                                            : participationDateController.text,
+                                    //  warddropdownValue.id,
+                                    stateId: heirarchyProvider.stateDropDownValue,
+                                    districtId:
+                                        heirarchyProvider.districtDropdownValue,
+                                    constituencyId: heirarchyProvider
+                                        .constituencyDropdownValue,
+                                    panchayathId:
+                                        heirarchyProvider.panchayathDropdownValue,
+                                    wardId: heirarchyProvider.wardDropdownValue,
+                                    unitId: heirarchyProvider.unitDropdownValue,
+                                  );
+                                } else {
+                                  await memberProvider.addMember(
+                                    name: nameController.text,
+                                    dob: dobController.text,
+                                    status:
+                                        memberProvider.statusDropDown == "Active"
+                                            ? 1
+                                            : 0,
+                                    gender: value == 1 ? "Male" : "Female",
+                                    age: ageController.text,
+                                    blood: selectedBloodGroup,
+                                    mobile: mobileController.text,
+                                    email: emailController.text,
+                                    address: addressController.text,
+                                    isAgree: checkBoxValue,
+                                    adminssionYear:
+                                        selectedAdmissionYear == "Admission Year"
+                                            ? null
+                                            : selectedAdmissionYear,
+                                    participationDate:
+                                        participationDateController.text.isEmpty
+                                            ? null
+                                            : participationDateController.text,
+                                    stateId: heirarchyProvider.stateDropDownValue,
+                                    districtId:
+                                        heirarchyProvider.districtDropdownValue,
+                                    constituencyId: heirarchyProvider
+                                        .constituencyDropdownValue,
+                                    panchayathId:
+                                        heirarchyProvider.panchayathDropdownValue,
+                                    wardId: heirarchyProvider.wardDropdownValue,
+                                    unitId: heirarchyProvider.unitDropdownValue,
+                                  );
+                                }
+                          
+                                // ignore: use_build_context_synchronously
+                                // Navigator.pop(context);
+                                // ignore: use_build_context_synchronously
+                                heirarchyProvider.setInitialData(
+                                  all: true,
+                                  edit: false,
+                                  entity: null,
                                   context: context,
-                                  text:
-                                      "Member ${widget.edit ? 'Updated' : 'Created'}");
-                            },
-                            child: Text(
-                              widget.edit ? "Update" : "Add",
-                              style: const TextStyle(fontSize: 18),
+                                );
+                                Navigator.pop(context);
+                                showSnackbar(
+                                    context: context,
+                                    text:
+                                        "Member ${widget.edit ? 'Updated' : 'Created'}");
+                              },
+                              child: Text(
+                                widget.edit ? "Update" : "Add",
+                                style: const TextStyle(fontSize: 18),
+                              ),
                             ),
                           ),
                         ),

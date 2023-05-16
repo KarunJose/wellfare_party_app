@@ -24,15 +24,18 @@ import 'package:wellfare_party_app/Screens/messages/AllMessages/singleMessageVie
 import 'package:wellfare_party_app/Screens/messages/SendMessages/send_message.dart';
 import 'package:wellfare_party_app/providers/attendence_Provider.dart';
 import 'package:wellfare_party_app/providers/bearer_provider.dart';
+import 'package:wellfare_party_app/providers/constituencyList_provider.dart';
 import 'package:wellfare_party_app/providers/heirarchy_provider.dart';
 
 import 'package:wellfare_party_app/providers/member_provider.dart';
 import 'package:wellfare_party_app/providers/messageProvider.dart';
 import 'package:wellfare_party_app/providers/notificationprovider.dart';
+import 'package:wellfare_party_app/providers/panchayat_provider.dart';
 import 'package:wellfare_party_app/providers/position_provider.dart';
 import 'package:wellfare_party_app/providers/questions_provider.dart';
 import 'package:wellfare_party_app/providers/report_provider.dart';
 import 'package:wellfare_party_app/providers/rootapp_provider.dart';
+import 'package:wellfare_party_app/providers/unit_provider.dart';
 import 'package:wellfare_party_app/providers/userprovider.dart';
 import 'package:wellfare_party_app/providers/userrole_provider.dart';
 import 'package:wellfare_party_app/providers/ward_provider.dart';
@@ -68,6 +71,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MessageProvider()),
         ChangeNotifierProvider(create: (_) => AttendenceProvider()),
         ChangeNotifierProvider(create: (_) => QuestionsProvider()),
+        ChangeNotifierProvider(create: (_) => ConstituencyProvider()),
+        ChangeNotifierProvider(create: (_) => PanchayatProvider()),
+        ChangeNotifierProvider(create: (_) => UnitProvider()),
+
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

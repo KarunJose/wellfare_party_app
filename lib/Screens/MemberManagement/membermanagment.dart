@@ -101,6 +101,7 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
       _url,
       mode: LaunchMode.externalApplication,
     )) {
+      if (!mounted) return;
       showSnackbar(
         context: context,
         text: "Failed",
@@ -115,6 +116,7 @@ class _MemberManagementScreenState extends State<MemberManagementScreen> {
       _url,
       mode: LaunchMode.externalApplication,
     )) {
+      if(!mounted) return;
       showSnackbar(
         context: context,
         text: "Failed",
